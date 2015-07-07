@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ require 'java_buildpack/container/tomcat/YamlParser'
 require 'open-uri'
 require 'pathname'
 require 'digest/sha1'
-
+require 'json'
 
 module JavaBuildpack
   module Container
@@ -36,7 +36,6 @@ module JavaBuildpack
       #
       # @param [Hash] context a collection of utilities used the component
       def initialize(context)
-       
         super(context) { |candidate_version| candidate_version.check_size(3) }
         @yamlobj=YamlParser.new(context)
        end
@@ -49,7 +48,13 @@ module JavaBuildpack
                contextpaths = Hash.new
                wapps=@yamlobj.read_config "webapps", "war"
                      wapps.each do |wapp|
-                        outputpath = @droplet.root + wapp.artifactname
+                        unless wapp.contextpath.nil?
+                            wapp.contextpath.strip!
+                            warFilename = (wapp.contextpath == "/") ? "/ROOT" : wapp.contextpath
+                            warFilename.slice! "/"
+                        end
+                        warFilename =  warFilename.nil? ?  wapp.artifactname : "#{warFilename}.war"
+                        outputpath = @droplet.root + warFilename
                         #if only contextpath available in YAML will be selected for Context tag entry in server.xml
                         unless wapp.contextpath.nil? 
                         wapp.artifactname.slice!(".war")
@@ -73,9 +78,10 @@ module JavaBuildpack
         FileUtils.mkdir_p tomcat_webapps
         link_webapps(wars, tomcat_webapps)
         #dyanamic context tag will be created under Server.xml 
-        unless contextpaths.nil?
-        context_path_appender contextpaths 
-        end
+        # Commenting this out temporarily. Till a better solution is found
+        #unless contextpaths.nil?
+        #context_path_appender contextpaths
+        #end
         else
          
           link_webapps(@application.root.children, tomcat_webapps)
@@ -134,6 +140,11 @@ module JavaBuildpack
           @droplet.copy_resources
           configure_linking
           configure_jasper
+          if ENV.has_key?('valve')
+          unless ENV['valve'].nil? && ENV['valve'].empty?
+          valve_appender
+          end
+          end
         end
       end
 
@@ -200,7 +211,41 @@ module JavaBuildpack
             end
                     
            write_xml server_xml, document
-         end  
+         end 
+       #using REXML we are adding Valve Elements under Host Context and Engine tag in server.xml 
+       def valve_appender
+          valveclass= ENV['valve']
+          begin
+           obj=JSON.parse(valveclass)
+          rescue JSON::ParserError => e
+           puts "NOT A VALID JSON FORMAT"
+           return false
+          end
+          document = read_xml server_xml
+          documentcon = read_xml context_xml
+          context  = REXML::XPath.match(documentcon, '/Context').first
+          engine= REXML::XPath.match(document, '/Server/Service/Engine').first
+          host   = REXML::XPath.match(document, '/Server/Service/Engine/Host').first
+          obj.each do |k,a|
+             if obj.has_key?(k)	
+               for i in 0..obj[k].length-1
+                 valve = REXML::Element.new('Valve') 
+                 obj[k][i].each do |attribute,value|
+                  valve.add_attribute  attribute, value 
+                 end 
+                 if  k == 'host'
+                   host.elements.add(valve)
+                 elsif k == 'context'
+                   context.elements.add(valve)
+                 elsif k == 'engine'
+                   engine.insert_before '//Host', valve
+                 end 
+               end
+             end
+            end 
+          write_xml server_xml, document
+          write_xml context_xml,documentcon
+       end
     end
   end
 end

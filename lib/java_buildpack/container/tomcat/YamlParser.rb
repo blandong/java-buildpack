@@ -40,6 +40,18 @@ class YamlParser < JavaBuildpack::Component::BaseComponent
                               @repopath = "&r=#{@repoid}"
                               @webapps = @config['webapps']
                               @libraries=@config['libraries']  
+                          
+                              unless @config["container"].nil?
+                              $configtomcat=@config["container"]["configtomcat"]
+                              else
+                              $configtomcat="tomcat8"  
+                              end
+                              
+                              unless @config["container"].nil?
+                              $configjdk=@config["container"]["configjdk"]
+                              else
+                              $configjdk="openjdk8"  
+                              end
                               unless @libraries.nil?
                                 @libraries.each do|lib|
                                     ['g', 'a', 'v'].each {|key| abort "Invalid YAML format in libraries" unless !lib.is_a?(String) && lib.has_key?(key)} 
