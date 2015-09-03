@@ -27,7 +27,7 @@ memory_calculator:
     metaspace: 64m..
     permgen: 64m..
   repository_root: ! '{default.repository.root}/memory-calculator/{platform}/{architecture}'
-  version: 2.+
+  version: 1.+
 oraclejdk8: 
   repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
   version: 1.8.0_+
