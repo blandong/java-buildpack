@@ -45,3 +45,4 @@ frameworks:
   - "JavaBuildpack::Framework::SpringAutoReconfiguration"
   - "JavaBuildpack::Framework::SpringInsight"
   - "JavaBuildpack::Framework::JceSupport"
+  - "JavaBuildpack::Framework::JacocoAgent"
