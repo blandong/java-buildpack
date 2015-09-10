@@ -95,7 +95,7 @@ module JavaBuildpack
       end
 
       def home_dir
-        @droplet.sandbox + 'jacoco_agent/home'
+        @droplet.sandbox + 'home'
       end
 
       def server
