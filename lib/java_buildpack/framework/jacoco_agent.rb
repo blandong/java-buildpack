@@ -50,7 +50,7 @@ module JavaBuildpack
                                     #name: application_name + '_' + profile_name,
                                     #server: server)
        java_opts   = @droplet.java_opts
-       java_opts.add_javaagent(@droplet.sandbox + '/lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec,append=true,includes=*')                    
+       java_opts.add_javaagent(@droplet.sandbox + 'lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec,append=true,includes=*')                    
         #@droplet.java_opts
         #        .add_agentpath(@droplet.sandbox + "/lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec,append=true,includes=*")                            
       end
