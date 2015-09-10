@@ -30,6 +30,8 @@ module JavaBuildpack
       def compile
         download_zip false
         @droplet.copy_resources
+        puts "home_dir"
+        puts home_dir
         FileUtils.mkdir(home_dir)
         #FileUtils.mv(@droplet.sandbox + 'jacoco', home_dir)
         FileUtils.mv(@droplet.sandbox, home_dir)
@@ -47,7 +49,7 @@ module JavaBuildpack
                                     #server: server)
                            
         @droplet.java_opts
-                .add_agentpath(agent_dir + "lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec,append=true,includes=*")                            
+                .add_agentpath(home_dir + "lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec,append=true,includes=*")                            
       end
 
       protected
