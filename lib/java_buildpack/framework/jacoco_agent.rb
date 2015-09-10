@@ -32,10 +32,13 @@ module JavaBuildpack
         @droplet.copy_resources
         puts "home_dir"
         puts home_dir
+        puts "@droplet.sandbox"
+        puts @droplet.sandbox
+        
         FileUtils.mkdir(home_dir)
         #FileUtils.mv(@droplet.sandbox + 'jacoco', home_dir)
-        FileUtils.mv(@droplet.sandbox, home_dir)
-        delete_extra_files
+        FileUtils.mv(@droplet.sandbox+'jacoco_agent', home_dir)
+        #delete_extra_files
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
