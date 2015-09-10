@@ -37,7 +37,7 @@ module JavaBuildpack
         
         FileUtils.mkdir(home_dir)
         #FileUtils.mv(@droplet.sandbox + 'jacoco', home_dir)
-        FileUtils.mv(@droplet.sandbox+'jacoco_agent', home_dir)
+        FileUtils.mv(@droplet.sandbox, home_dir)
         #delete_extra_files
       end
 
