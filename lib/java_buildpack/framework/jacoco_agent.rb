@@ -30,29 +30,15 @@ module JavaBuildpack
       def compile
         download_zip false
         @droplet.copy_resources
-        #puts "home_dir"
-        #puts home_dir
-        #puts "@droplet.sandbox"
-        #puts @droplet.sandbox
-        #FileUtils.mkdir(home_dir)
-        #FileUtils.mv(@droplet.sandbox + 'jacoco', home_dir)
-        #FileUtils.mv(@droplet.sandbox, home_dir)
-        #delete_extra_files
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
-        #@droplet.java_opts
-        #        .add_agentpath_with_props(agent_dir + "libdtagent.so", name: "Tomcat_Monitoring", server: server)
-        #this below will be used when we go for generic profile..
-        #@droplet.java_opts
-          #.add_agentpath_with_props(agent_dir + 'libdtagent.so',
-                                    #name: application_name + '_' + profile_name,
-                                    #server: server)
-       java_opts   = @droplet.java_opts
-       java_opts.add_javaagent(@droplet.sandbox + 'lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec,append=true,includes=*')                    
-        #@droplet.java_opts
-        #        .add_agentpath(@droplet.sandbox + "/lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec,append=true,includes=*")                            
+       #java_opts   = @droplet.java_opts
+       #java_opts.add_javaagent(@droplet.sandbox + 'lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec,append=true,includes=*')
+       
+       @droplet.java_opts
+                .add_agentpath_with_props(@droplet.sandbox + "lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec", append: "true", includes: "*")                    
       end
 
       protected
@@ -79,15 +65,6 @@ module JavaBuildpack
 
       def agent_dir
         @droplet.sandbox + 'home/jacoco'
-      end
-
-      def delete_extra_files
-        FileUtils.rm_rf(@droplet.sandbox + 'agent')
-        FileUtils.rm_rf(@droplet.sandbox + 'init.d')
-        FileUtils.rm_rf(@droplet.sandbox + 'com')
-        FileUtils.rm_rf(@droplet.sandbox + 'org')
-        FileUtils.rm_rf(@droplet.sandbox + 'META_INF')
-        FileUtils.rm_f(@droplet.sandbox + 'YouShouldNotHaveUnzippedMe.txt')
       end
 
       def logs_dir
