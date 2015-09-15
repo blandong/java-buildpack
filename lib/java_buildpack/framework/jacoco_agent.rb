@@ -34,8 +34,9 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
+      #-javaagent:D:\jacoco\lib\jacocoagent.jar=address=%JACOCO_SERVER_URL%,port=%JACOCO_SERVER_PORT%,output=tcpclient,includes=com.covisint.platform.clog.*,append=true"
        java_opts   = @droplet.java_opts
-       java_opts.add_javaagent(@droplet.sandbox + 'lib/jacocoagent.jar='+ "output=tcpclient,address=localhost,port=6300,includes=*")
+       java_opts.add_javaagent(@droplet.sandbox + 'lib/jacocoagent.jar=output=tcpclient,address=localhost,port=6300,includes=*,append=true")
        #@droplet.java_opts
                 #.add_agentpath_with_props(@droplet.sandbox + "lib/jacocoagent.jar=", output:"tcpclient", address: "localhost", port:"6300")
                             
