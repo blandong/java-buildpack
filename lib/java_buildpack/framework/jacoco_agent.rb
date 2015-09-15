@@ -34,11 +34,8 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
-       #java_opts   = @droplet.java_opts
-       #java_opts.add_javaagent(@droplet.sandbox + 'lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec,append=true,includes=*')
-       
-       @droplet.java_opts
-                .add_agentpath_with_props(@droplet.sandbox + "lib/jacocoagent.jar=destfile=/home/vcap/jacoco.exec", append: "true", includes: "*")                    
+       java_opts   = @droplet.java_opts
+       java_opts.add_javaagent(@droplet.sandbox + 'lib/jacocoagent.jar='+configuration)                    
       end
 
       protected
@@ -46,7 +43,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::VersionedDependencyComponent#supports?)
       def supports?
        true
-       # @application.services.one_service? FILTER, 'server'
+       # @application.services.one_service? FILTER, 'configuration'
       end
 
       private
@@ -58,11 +55,11 @@ module JavaBuildpack
       def application_name
         @application.details['application_name']
       end
-
-      def profile_name
-        @application.services.find_service(FILTER)['credentials']['profile'] || 'Monitoring'
+      
+      def configuration
+        @application.services.find_service(FILTER)['agentconfig']['configuration'] || 'output=tcpclient,address=localhost,port=6300,includes=*'
       end
-
+      
       def agent_dir
         @droplet.sandbox + 'home/jacoco'
       end
@@ -73,10 +70,6 @@ module JavaBuildpack
 
       def home_dir
         @droplet.sandbox + 'home'
-      end
-
-      def server
-        @application.services.find_service(FILTER)['credentials']['server']
       end
 
     end
