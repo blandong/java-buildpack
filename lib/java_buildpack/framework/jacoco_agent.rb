@@ -35,7 +35,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
        java_opts   = @droplet.java_opts
-       java_opts.add_javaagent(@droplet.sandbox + 'lib/jacocoagent.jar='+configuration)                    
+       java_opts.add_javaagent(@droplet.sandbox + 'lib/jacocoagent.jar='+ configuration.to_s)                    
       end
 
       protected
