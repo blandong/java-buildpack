@@ -15,5 +15,5 @@
 
 # Configuration for the jacoco Agent
 ---
-version: 0.7.5
+version: 0.7.4
 repository_root: ! '{default.repository.root}/jacoco'
