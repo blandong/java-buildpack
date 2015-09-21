@@ -28,6 +28,7 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#compile)
       def compile
+       #configuration = 'lib/jacocoagent.jar=output=tcpclient,address='+$server_url+',port='+$server_port+',includes=*,append=true'
         download_zip false
         @droplet.copy_resources
       end
@@ -36,9 +37,17 @@ module JavaBuildpack
       def release
       #-javaagent:D:\jacoco\lib\jacocoagent.jar=address=%JACOCO_SERVER_URL%,port=%JACOCO_SERVER_PORT%,output=tcpclient,includes=com.covisint.platform.clog.*,append=true"
        java_opts   = @droplet.java_opts
-       #server_url ='localhost' #default url
-       #server_port = '6300' #default port
        
+       java_opts.add_javaagent(@droplet.sandbox + "lib/jacocoagent.jar=output=tcpclient,address=localhost,port=6300,includes=*,append=true")
+       #@droplet.java_opts
+                #.add_agentpath_with_props(@droplet.sandbox + "lib/jacocoagent.jar=", output:"tcpclient", address: "localhost", port:"6300")
+                            
+      end
+
+      protected
+
+      # (see JavaBuildpack::Component::VersionedDependencyComponent#supports?)
+      def supports?
        if ENV.has_key?('JACOCO_SERVER_URL')
           unless ENV['JACOCO_SERVER_URL'].nil? && ENV['JACOCO_SERVER_URL'].empty?
           server_url = ENV['JACOCO_SERVER_URL']
@@ -50,19 +59,6 @@ module JavaBuildpack
           server_port = ENV['JACOCO_SERVER_PORT']
           end
        end
-       
-       configuration = 'lib/jacocoagent.jar=output=tcpclient,address='+$server_url+',port='+$server_port+',includes=*,append=true'
-       #puts configuration
-       java_opts.add_javaagent(@droplet.sandbox + "lib/jacocoagent.jar=output=tcpclient,address=localhost,port=6300,includes=*,append=true")
-       #@droplet.java_opts
-                #.add_agentpath_with_props(@droplet.sandbox + "lib/jacocoagent.jar=", output:"tcpclient", address: "localhost", port:"6300")
-                            
-      end
-
-      protected
-
-      # (see JavaBuildpack::Component::VersionedDependencyComponent#supports?)
-      def supports?
        true
        # @application.services.one_service? FILTER, 'configuration'
       end
