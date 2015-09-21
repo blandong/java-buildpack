@@ -52,7 +52,7 @@ module JavaBuildpack
        end
        
        configuration = "lib/jacocoagent.jar=output=tcpclient,address="+server_url+",port="+server_port+",includes=*,append=true"
-       
+       puts configuration
        java_opts.add_javaagent(@droplet.sandbox + "lib/jacocoagent.jar=output=tcpclient,address=localhost,port=6300,includes=*,append=true")
        #@droplet.java_opts
                 #.add_agentpath_with_props(@droplet.sandbox + "lib/jacocoagent.jar=", output:"tcpclient", address: "localhost", port:"6300")
