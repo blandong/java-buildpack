@@ -31,9 +31,9 @@ module JavaBuildpack
        #configuration = 'lib/jacocoagent.jar=output=tcpclient,address='+$server_url+',port='+$server_port+',includes=*,append=true'
         download_zip false
         @droplet.copy_resources
-        puts type(@jacoco_config)
-        puts @jacoco_config
-        puts @jacoco_config.to_s
+        
+        puts "#@jacoco_config"
+        puts "#@jacoco_config.to_s"
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
@@ -87,18 +87,18 @@ module JavaBuildpack
          
            if ENV.has_key?('JACOCO_SERVER_URL')
               unless ENV['JACOCO_SERVER_URL'].nil? && ENV['JACOCO_SERVER_URL'].empty?
-              server_url = ENV['JACOCO_SERVER_URL']
+              @server_url = ENV['JACOCO_SERVER_URL']
               end
            end
            
            if ENV.has_key?('JACOCO_SERVER_PORT')
               unless ENV['JACOCO_SERVER_PORT'].nil? && ENV['JACOCO_SERVER_PORT'].empty?
-              server_port = ENV['JACOCO_SERVER_PORT']
+              @server_port = ENV['JACOCO_SERVER_PORT']
               end
            end
-           unless server_url.nil? or server_port.nil?
-               if (not server_url.empty?) && (not server_port.empty?)
-                 @jacoco_config = "lib/jacocoagent.jar=output=tcpclient,address="+server_url+",port="+server_port+",includes=*,append=true"
+           unless @server_url.nil? or @server_port.nil?
+               if (not @server_url.empty?) && (not @server_port.empty?)
+                 @jacoco_config = "lib/jacocoagent.jar=output=tcpclient,address="+@server_url+",port="+@server_port+",includes=*,append=true"
                   return true
                end
            end
