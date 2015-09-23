@@ -28,21 +28,14 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#compile)
       def compile
-       #configuration = 'lib/jacocoagent.jar=output=tcpclient,address='+$server_url+',port='+$server_port+',includes=*,append=true'
         download_zip false
         @droplet.copy_resources
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
-      #-javaagent:D:\jacoco\lib\jacocoagent.jar=address=%JACOCO_SERVER_URL%,port=%JACOCO_SERVER_PORT%,output=tcpclient,includes=com.covisint.platform.clog.*,append=true"
        java_opts   = @droplet.java_opts
-       
-       #java_opts.add_javaagent(@droplet.sandbox +"lib/jacocoagent.jar=output=tcpclient,address=localhost,port=6300,includes=*,append=true")
        java_opts.add_javaagent(@droplet.sandbox + @jacoco_config)
-       #@droplet.java_opts
-                #.add_agentpath_with_props(@droplet.sandbox + "lib/jacocoagent.jar=", output:"tcpclient", address: "localhost", port:"6300")
-                            
       end
 
       protected
@@ -81,18 +74,20 @@ module JavaBuildpack
       end
 
       def agent_configuration
-         
+          # JACOCO_SERVER_URL from ENV
            if ENV.has_key?('JACOCO_SERVER_URL')
               unless ENV['JACOCO_SERVER_URL'].nil? && ENV['JACOCO_SERVER_URL'].empty?
               @server_url = ENV['JACOCO_SERVER_URL']
               end
            end
-           
+          # JACOCO_SERVER_PORT from ENV 
            if ENV.has_key?('JACOCO_SERVER_PORT')
               unless ENV['JACOCO_SERVER_PORT'].nil? && ENV['JACOCO_SERVER_PORT'].empty?
               @server_port = ENV['JACOCO_SERVER_PORT']
               end
            end
+           
+           #construct jacoco_agent configuration using server and port for tcpclient.
            unless @server_url.nil? or @server_port.nil?
                if (not @server_url.empty?) && (not @server_port.empty?)
                  @jacoco_config = "lib/jacocoagent.jar=output=tcpclient,address="+@server_url+",port="+@server_port+",includes=*,append=true"
