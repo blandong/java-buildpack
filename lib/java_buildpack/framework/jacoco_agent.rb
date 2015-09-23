@@ -48,17 +48,6 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::VersionedDependencyComponent#supports?)
       def supports?
-       if ENV.has_key?('JACOCO_SERVER_URL')
-          unless ENV['JACOCO_SERVER_URL'].nil? && ENV['JACOCO_SERVER_URL'].empty?
-          server_url = ENV['JACOCO_SERVER_URL']
-          end
-       end
-       
-       if ENV.has_key?('JACOCO_SERVER_PORT')
-          unless ENV['JACOCO_SERVER_PORT'].nil? && ENV['JACOCO_SERVER_PORT'].empty?
-          server_port = ENV['JACOCO_SERVER_PORT']
-          end
-       end
        true
        # @application.services.one_service? FILTER, 'configuration'
       end
@@ -89,6 +78,27 @@ module JavaBuildpack
         @droplet.sandbox + 'home'
       end
 
+      def agent_configuration
+         
+           if ENV.has_key?('JACOCO_SERVER_URL')
+              unless ENV['JACOCO_SERVER_URL'].nil? && ENV['JACOCO_SERVER_URL'].empty?
+              server_url = ENV['JACOCO_SERVER_URL']
+              end
+           end
+           
+           if ENV.has_key?('JACOCO_SERVER_PORT')
+              unless ENV['JACOCO_SERVER_PORT'].nil? && ENV['JACOCO_SERVER_PORT'].empty?
+              server_port = ENV['JACOCO_SERVER_PORT']
+              end
+           end
+           
+           if (not server_url.empty?) && (not server_port.empty?)
+              return true
+           end
+           
+           return false
+           
+      end
     end
 
   end
