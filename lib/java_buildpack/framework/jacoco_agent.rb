@@ -31,6 +31,9 @@ module JavaBuildpack
        #configuration = 'lib/jacocoagent.jar=output=tcpclient,address='+$server_url+',port='+$server_port+',includes=*,append=true'
         download_zip false
         @droplet.copy_resources
+        puts type(configuration)
+        puts configuration
+        puts configuration.to_s
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
