@@ -92,9 +92,10 @@ module JavaBuildpack
               server_port = ENV['JACOCO_SERVER_PORT']
               end
            end
-           
-           if (not server_url.empty?) && (not server_port.empty?)
-              return true
+           unless server_url.nil? or server_port.nil?
+               if (not server_url.empty?) && (not server_port.empty?)
+                  return true
+               end
            end
            
            return false
