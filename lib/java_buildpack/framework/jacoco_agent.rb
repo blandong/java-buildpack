@@ -48,7 +48,8 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::VersionedDependencyComponent#supports?)
       def supports?
-       true
+       agent_configuration
+       #true
        # @application.services.one_service? FILTER, 'configuration'
       end
 
