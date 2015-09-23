@@ -31,9 +31,9 @@ module JavaBuildpack
        #configuration = 'lib/jacocoagent.jar=output=tcpclient,address='+$server_url+',port='+$server_port+',includes=*,append=true'
         download_zip false
         @droplet.copy_resources
-        puts type(configuration)
-        puts configuration
-        puts configuration.to_s
+        puts type(@jacoco_config)
+        puts @jacoco_config
+        puts @jacoco_config.to_s
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
@@ -98,7 +98,7 @@ module JavaBuildpack
            end
            unless server_url.nil? or server_port.nil?
                if (not server_url.empty?) && (not server_port.empty?)
-                 configuration = "lib/jacocoagent.jar=output=tcpclient,address="+server_url+",port="+server_port+",includes=*,append=true"
+                 @jacoco_config = "lib/jacocoagent.jar=output=tcpclient,address="+server_url+",port="+server_port+",includes=*,append=true"
                   return true
                end
            end
