@@ -130,7 +130,7 @@ module JavaBuildpack
         severity = ENV['JBP_LOG_LEVEL']
         severity = ruby_mode unless severity
         severity = JavaBuildpack::Util::ConfigurationUtils.load('logging', false)['default_log_level'] unless severity
-        severity = 'INFO' unless severity
+        severity = 'DEBUG' unless severity
 
         "::Logger::Severity::#{severity.upcase}".constantize
       end
