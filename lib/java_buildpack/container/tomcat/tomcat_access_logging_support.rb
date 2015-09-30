@@ -44,7 +44,7 @@ module JavaBuildpack
 
       private
 
-      KEY_ENABLED = 'access_logging'.freeze
+      KEY_ENABLED = 'access_logging'.enabled
 
       def jar_name
         "tomcat_access_logging_support-#{@version}.jar"
